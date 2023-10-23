@@ -41,8 +41,8 @@ li {
     let start = document.getElementById("start").value.trim();
     let stop = document.getElementById("stop").value.trim();
 
-    let simple_plot = await fetch("simple_plot.R")
-    await webr.evalR(await simple_plot.text())
+    //let simple_plot = await fetch("simple_plot.R")
+    //await webr.evalR(await simple_plot.text())
 
     await webR.evalRVoid(`
       webr::canvas()
@@ -65,7 +65,7 @@ li {
   document.getElementById('callr').onclick = callR;
   document.getElementById('callr').disabled = false;
     
-})
+});
 
 </script>
 
