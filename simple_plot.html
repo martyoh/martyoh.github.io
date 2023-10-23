@@ -37,9 +37,6 @@ li {
   let container = document.getElementById('plot-container');
   let button = document.getElementById('callr');
 
-  let start = document.getElementById("start").value.trim();
-  let stop = document.getElementById("stop").value.trim();
-  
   button.onclick = () => {
     container.replaceChildren();
     webR.evalRVoid(`
@@ -56,6 +53,9 @@ li {
     loading.remove();
     button.removeAttribute('disabled');
 
+    let start = document.getElementById("start").value.trim();
+    let stop = document.getElementById("stop").value.trim();
+  
     // Handle webR output messages in an async loop
     for (;;) {
       const output = await webR.read();
