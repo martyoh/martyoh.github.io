@@ -46,7 +46,8 @@ li {
 
     await webR.evalRVoid(`
       webr::canvas()
-      simple_plot(${start}, ${stop})
+      //simple_plot(${start}, ${stop})
+      plot(1:5, 1:5)
       dev.off()
     `);
 
