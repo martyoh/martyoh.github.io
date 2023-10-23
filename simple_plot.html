@@ -17,9 +17,9 @@ li {
 <div id="main">
 <p>Basic input fields and plotting.</p>
 <p>Start value</p>
-<input type="text" id="start" value="">
+<input type="text" id="start" value="1">
 <p>Stop value</p>
-<input type="text" id="stop" value="">
+<input type="text" id="stop" value="5">
 
 <p class="nospace">Press "Simulate" (when it is enabled)</p>
 <!-- This button is disabled until WebR is loaded -->
@@ -37,11 +37,15 @@ li {
   let container = document.getElementById('plot-container');
   let button = document.getElementById('callr');
 
+  let start = document.getElementById("start").value.trim();
+  let stop = document.getElementById("stop").value.trim();
+  
   button.onclick = () => {
     container.replaceChildren();
     webR.evalRVoid(`
       webr::canvas()
       plot(1:5, 1:5)
+      plot(${start}:${stop}, ${start}:${stop})
       dev.off()
     `);
   }
