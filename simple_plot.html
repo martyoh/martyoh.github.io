@@ -13,6 +13,7 @@ li {
 </style>
 </head>
 <body>
+<p><div id="loading">Please wait, webR is loading...</div></p>
 <div id="main">
 <p>Basic input fields and plotting.</p>
 <p>Start value</p>
@@ -23,50 +24,60 @@ li {
 <p class="nospace">Press "Simulate" (when it is enabled)</p>
 <!-- This button is disabled until WebR is loaded -->
 <button disabled="" id="callr">Simulate</button>
+</div>
 
-<canvas id="plot-canvas" width="1008" height="1008"></canvas>
+<div id="plot-container"></div>
 
 <script type="module">
 
-  import('https://webr.r-wasm.org/latest/webr.mjs').then(async ({WebR}) => {
-
+  import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
   const webR = new WebR(); 
+  let canvas = null;
+  let loading = document.getElementById('loading');
+  let container = document.getElementById('plot-container');
+  let button = document.getElementById('callr');
 
-  await webR.init(); 
-
-  // we call this function on the button press
-
-  async function callR() {
-
-    let start = document.getElementById("start").value.trim();
-    let stop = document.getElementById("stop").value.trim();
-
-    //let simple_plot = await fetch("simple_plot.R")
-    //await webr.evalR(await simple_plot.text())
-
-    await webR.evalRVoid(`
+  button.onclick = () => {
+    container.replaceChildren();
+    webR.evalRVoid(`
       webr::canvas()
-      //simple_plot(${start}, ${stop})
       plot(1:5, 1:5)
       dev.off()
     `);
-
-    const msgs = await webR.flush();
-    msgs.forEach(msg => {
-      if (msg.type === 'canvas' && msg.data.event === 'canvasImage') {
-        const canvas = document.getElementById('plot-canvas');
-        canvas.getContext('2d').drawImage(msg.data.image, 0, 0);
-      } else {
-        console.log(msg);
-      }
-    });
   }
 
-  document.getElementById('callr').onclick = callR;
-  document.getElementById('callr').disabled = false;
-    
-});
+  (async () => {
+    // Remove the loading message once webR is ready
+    await webR.init();
+    loading.remove();
+    button.removeAttribute('disabled');
 
+    // Handle webR output messages in an async loop
+    for (;;) {
+      const output = await webR.read();
+      switch (output.type) {
+        case 'canvas':
+          if (output.data.event === 'canvasImage') {
+            // Add plot image data to the current canvas element
+            canvas.getContext('2d').drawImage(output.data.image, 0, 0);
+          } else if (output.data.event === 'canvasNewPage') {
+            // Create a new canvas element
+            canvas = document.createElement('canvas');
+            canvas.setAttribute('width', '1008');
+            canvas.setAttribute('height', '1008');
+            canvas.style.width = "450px";
+            canvas.style.height = "450px";
+            canvas.style.display = "inline-block";
+            container.appendChild(canvas);
+          }
+          break;
+        default:
+          console.log(output);
+      }
+    }
+  })();
 </script>
+</body>
+</html>
 
 
