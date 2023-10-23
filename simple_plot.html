@@ -1,0 +1,69 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebR Super Simple Demo</title>
+<style>
+li {
+  font-family:monospace;
+}
+.nospace {
+  margin-bottom: 2px;
+}
+</style>
+</head>
+<body>
+<div id="main">
+<p>Basic input fields and plotting.</p>
+<p>Start value</p>
+<input type="text" id="start" value="">
+<p>Stop value</p>
+<input type="text" id="stop" value="">
+
+<p class="nospace">Press "Simulate" (when it is enabled)</p>
+<!-- This button is disabled until WebR is loaded -->
+<button disabled="" id="callr">Simulate</button>
+
+<canvas id="plot-canvas" width="1008" height="1008"></canvas>
+
+<script type="module">
+
+  import('https://webr.r-wasm.org/latest/webr.mjs').then(async ({WebR}) => {
+
+  const webR = new WebR(); 
+
+  await webR.init(); 
+
+  // we call this function on the button press
+
+  async function callR() {
+
+    let start = document.getElementById("start").value.trim();
+    let stop = document.getElementById("stop").value.trim();
+
+    let simple_plot = await fetch("simple_plot.R")
+    await webr.evalR(await simple_plot.text())
+
+    await webR.evalRVoid(`
+      webr::canvas()
+      simple_plot(${start}, ${stop})
+      dev.off()
+    `);
+
+    const msgs = await webR.flush();
+    msgs.forEach(msg => {
+      if (msg.type === 'canvas' && msg.data.event === 'canvasImage') {
+        const canvas = document.getElementById('plot-canvas');
+        canvas.getContext('2d').drawImage(msg.data.image, 0, 0);
+      } else {
+        console.log(msg);
+      }
+    });
+  }
+
+  document.getElementById('callr').onclick = callR;
+  document.getElementById('callr').disabled = false;
+})
+</script>
+
+
