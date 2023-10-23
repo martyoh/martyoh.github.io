@@ -38,6 +38,8 @@ li {
   let button = document.getElementById('callr');
 
   button.onclick = () => {
+    let start = document.getElementById("start").value.trim();
+    let stop = document.getElementById("stop").value.trim();
     container.replaceChildren();
     webR.evalRVoid(`
       webr::canvas()
@@ -53,9 +55,6 @@ li {
     loading.remove();
     button.removeAttribute('disabled');
 
-    let start = document.getElementById("start").value.trim();
-    let stop = document.getElementById("stop").value.trim();
-  
     // Handle webR output messages in an async loop
     for (;;) {
       const output = await webR.read();
