@@ -3,7 +3,7 @@ automaton <- function(str = NULL,
                       n_rows = 30,
                       n_cols = 50,
                       iterations = 100,
-                      symbols = c("a", "b", "c", "d")) {
+                      symbols = 1:4) {
 
   # create random string if none is given
   if (is.null(str)) {
