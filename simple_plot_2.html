@@ -1,0 +1,88 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WebR Super Simple Demo</title>
+<style>
+li {
+  font-family:monospace;
+}
+.nospace {
+  margin-bottom: 2px;
+}
+</style>
+</head>
+<body>
+<p><div id="loading">Please wait, webR is loading...</div></p>
+<p><div id="packages">Please wait, webR packages are loading...</div></p>
+<div id="main">
+<p>Basic input fields and plotting.</p>
+<p>Start value</p>
+<input type="text" id="start" value="1">
+<p>Stop value</p>
+<input type="text" id="stop" value="5">
+
+<p class="nospace">Press "Simulate" (when it is enabled)</p>
+<!-- This button is disabled until WebR is loaded -->
+<button disabled="" id="callr">Simulate</button>
+</div>
+
+<div id="plot-container"></div>
+
+<script type="module">
+
+  import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
+  const webR = new WebR(); 
+  let canvas = null;
+  let loading = document.getElementById('loading');
+  let container = document.getElementById('plot-container');
+  let button = document.getElementById('callr');
+
+  button.onclick = () => {
+    let start = document.getElementById("start").value.trim();
+    let stop = document.getElementById("stop").value.trim();
+    container.replaceChildren();
+    webR.evalRVoid(`
+      webr::canvas()
+      plot(1:5, 1:5)
+      plot(${start}:${stop}, ${start}:${stop})
+      dev.off()
+    `);
+  }
+
+  (async () => {
+    // Remove the loading message once webR is ready
+    await webR.init();
+    loading.remove();
+    await webR.installPackages(['ggplot2', 'magrittr', 'dplyr', 'tidyr', 'DescTools']);
+    packages.remove();
+    button.removeAttribute('disabled');
+
+    // Handle webR output messages in an async loop
+    for (;;) {
+      const output = await webR.read();
+      switch (output.type) {
+        case 'canvas':
+          if (output.data.event === 'canvasImage') {
+            // Add plot image data to the current canvas element
+            canvas.getContext('2d').drawImage(output.data.image, 0, 0);
+          } else if (output.data.event === 'canvasNewPage') {
+            // Create a new canvas element
+            canvas = document.createElement('canvas');
+            canvas.setAttribute('width', '1008');
+            canvas.setAttribute('height', '1008');
+            canvas.style.width = "450px";
+            canvas.style.height = "450px";
+            canvas.style.display = "inline-block";
+            container.appendChild(canvas);
+          }
+          break;
+        default:
+          console.log(output);
+      }
+    }
+  })();
+</script>
+</body>
+</html>
+
