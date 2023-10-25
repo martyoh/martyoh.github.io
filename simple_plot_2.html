@@ -19,7 +19,7 @@ li {
 <p class="nospace">Random seed (leave blank for clock-based
 randomization).</p>
 
-<input type="text" id="my_seed" value="">
+<input type="text" id="my_seed" value="NULL">
 
 <p class="nospace">Model for generating the data</p>
 
@@ -88,8 +88,17 @@ randomization).</p>
   let button = document.getElementById('callr');
 
   button.onclick = () => {
-    let start = document.getElementById("start").value.trim();
-    let stop = document.getElementById("stop").value.trim();
+    let my_seed = document.getElementById("my_seed").value.trim();
+    let generating_model = document.getElementById("generating_model").value.trim();
+    let regression_model = document.getElementById("regression_model").value.trim();
+    let p1_E = document.getElementById("p1_E").value.trim();
+    let p1_C = document.getElementById("p1_C").value.trim();
+    let sd_E = document.getElementById("sd_E").value.trim();
+    let sd_C = document.getElementById("sd_C").value.trim();
+    let sd_D = document.getElementById("sd_D").value.trim();
+    let ror_ED = document.getElementById("ror_ED").value.trim();
+    let ror_CD = document.getElementById("ror_CD").value.trim();
+    let ror_ECD = document.getElementById("ror_ECD").value.trim();
     container.replaceChildren();
     webR.evalRVoid(`
       webr::canvas()
