@@ -89,7 +89,7 @@ randomization).</p>
 
   button.onclick = () => {
     let my_seed = document.getElementById("my_seed").value.trim();
-    let generating_model = document.getElementById("generating_model").value.trim();
+    let generating_model = document.querySelector('input[name="generating_model"]:checked').value;
     let regression_model = document.getElementById("regression_model").value.trim();
     let p1_E = document.getElementById("p1_E").value.trim();
     let p1_C = document.getElementById("p1_C").value.trim();
