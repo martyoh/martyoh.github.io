@@ -23,20 +23,20 @@ randomization).</p>
 
 <p class="nospace">Model for generating the data</p>
 
-<input type="radio" id="linear" name="generating_model" value="Linear">
+<input type="radio" id="linear" name="generating_model" value="linear">
 <label for="linear">Linear</label><br>
-<input type="radio" id="odds" name="generating_model" value="Odds">
+<input type="radio" id="odds" name="generating_model" value="odds">
 <label for="odds">Odds</label><br>
-<input type="radio" id="risk" name="generating_model" value="Risk">
+<input type="radio" id="risk" name="generating_model" value="risk">
 <label for="risk">Risk</label><br><br>
 
 <p class="nospace">Model for analyzing the data</p>
 
-<input type="radio" id="linear" name="regression_model" value="Linear">
+<input type="radio" id="linear" name="regression_model" value="linear">
 <label for="linear">Linear</label><br>
-<input type="radio" id="odds" name="regression_model" value="Odds">
+<input type="radio" id="odds" name="regression_model" value="odds">
 <label for="odds">Odds</label><br>
-<input type="radio" id="risk" name="regression_model" value="Risk">
+<input type="radio" id="risk" name="regression_model" value="risk">
 <label for="risk">Risk</label><br><br>
 
 <p class="nospace">Number of datasets</p>
@@ -91,6 +91,8 @@ randomization).</p>
     let my_seed = document.getElementById("my_seed").value.trim();
     let generating_model = document.querySelector('input[name="generating_model"]:checked').value;
     let regression_model = document.querySelector('input[name="regression_model"]:checked').value;
+    let reps = document.getElementById("reps").value.trim();
+    let N = document.getElementById("N").value.trim();
     let p1_E = document.getElementById("p1_E").value.trim();
     let p1_C = document.getElementById("p1_C").value.trim();
     let sd_E = document.getElementById("sd_E").value.trim();
