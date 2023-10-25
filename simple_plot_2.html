@@ -2,7 +2,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>2146</title>
+<title>2200</title>
 <style>
 li {
   font-family:monospace;
@@ -119,7 +119,7 @@ randomization).</p>
     loading.remove();
     button.removeAttribute('disabled');
     let sim_regr = await fetch('sim_regr.R');
-    await webr.evalR(await sim_regr.text());
+    await webR.evalR(await sim_regr.text());
 
 
     // Handle webR output messages in an async loop
