@@ -44,8 +44,11 @@ li {
     container.replaceChildren();
     webR.evalRVoid(`
       webr::canvas()
-      plot(1:5, 1:5)
-      plot(${start}:${stop}, ${start}:${stop})
+      sim_regr(${my_seed}, ${generating_model}, ${regression_model},
+               ${reps}, ${N}, 
+               ${p1_E}, ${p1_C},
+               ${sd_E}, ${sd_C}, ${sd_D},
+               ${ror_ED}, ${ror_CD}, ${ror_ECD})
       dev.off()
     `);
   }
@@ -54,9 +57,10 @@ li {
     // Remove the loading message once webR is ready
     await webR.init();
     loading.remove();
-    await webR.installPackages(['ggplot2', 'magrittr', 'dplyr', 'tidyr', 'DescTools']);
-    packages.remove();
     button.removeAttribute('disabled');
+    let sim_regr = await fetch('sim_regr.R');
+    await webr.evalR(await sim_regr.text());
+
 
     // Handle webR output messages in an async loop
     for (;;) {
