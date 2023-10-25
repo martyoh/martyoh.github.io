@@ -14,14 +14,63 @@ li {
 </head>
 <body>
 <p><div id="loading">Please wait, webR is loading...</div></p>
-<p><div id="packages">Please wait, webR packages are loading...</div></p>
 <div id="main">
-<p>Basic input fields and plotting.</p>
-<p>Start value</p>
-<input type="text" id="start" value="1">
-<p>Stop value</p>
-<input type="text" id="stop" value="5">
 
+<p class="nospace">Random seed (leave blank for clock-based
+randomization).</p>
+
+<input type="text" id="my_seed" value="">
+
+<p class="nospace">Model for generating the data</p>
+
+<input type="radio" id="linear" name="generating_model" value="Linear">
+<label for="linear">Linear</label><br>
+<input type="radio" id="odds" name="generating_model" value="Odds">
+<label for="odds">Odds</label><br>
+<input type="radio" id="risk" name="generating_model" value="Risk">
+<label for="risk">Risk</label><br><br>
+
+<p class="nospace">Model for analyzing the data</p>
+
+<input type="radio" id="linear" name="regression_model" value="Linear">
+<label for="linear">Linear</label><br>
+<input type="radio" id="odds" name="regression_model" value="Odds">
+<label for="odds">Odds</label><br>
+<input type="radio" id="risk" name="regression_model" value="Risk">
+<label for="risk">Risk</label><br><br>
+
+<p class="nospace">Number of datasets</p>
+
+<input type="text" id="reps" value="">
+
+<p class="nospace">Size of each dataset</p>
+
+<input type="text" id="N" value="">
+
+<p class="nospace">Probabililty of exposure</p>
+
+<input type="text" id="p_E" value="0.5">
+
+<p class="nospace">Probabililty of covariate</p>
+
+<input type="text" id="p_C" value="0.5">
+
+<p class="nospace">Standard deviations (linear case only)</p>
+<p class="nospace">Exposure
+<input type="text" id="sd_E" value="1.0"> </p>
+<p class="nospace">Covariate
+<input type="text" id="sd_C" value="1.0"></p>
+<p class="nospace">Outcome
+<input type="text" id="sd_D" value="1.0"></p>
+
+<p class="nospace">Effect sizes</p>
+<p class="nospace">Exposure &rarr; Outcome
+<input type="text" id="ror_ED" value="2.0"> </p>
+<p class="nospace">Covariate &rarr; Outcome
+<input type="text" id="ror_CD" value="2.0"></p>
+<p class="nospace">Exposure&ndash;covariate interaction
+<input type="text" id="ror_ECD" value="1.0"></p>
+  
 <p class="nospace">Press "Simulate" (when it is enabled)</p>
 <!-- This button is disabled until WebR is loaded -->
 <button disabled="" id="callr">Simulate</button>
