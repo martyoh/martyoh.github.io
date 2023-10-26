@@ -5,15 +5,16 @@
 <title>Simulate unnecessary adjustments</title>
 <style>
 li {
-  font-family:monospace;
+  font-family:sans-serif;
 }
 .nospace {
   margin-bottom: 2px;
+  font-family: sans-serif;
 }
 </style>
 </head>
 <body>
-<p><div id="loading">Please wait, webR is loading...</div></p>
+<p class="nospace"><div id="loading">Please wait, webR is loading...</div></p>
 <div id="main">
 
 <p class="nospace">Random seed (leave blank for clock-based
@@ -79,9 +80,9 @@ randomization).</p>
 <div id="plot-container"></div>
 
 <div id="acknowledgements">
-<p>Thanks to Alex Eisner, Anne-Louise Ponsonby and Sarah Thomson
+<p class="nospace">Thanks to Alex Eisner, Anne-Louise Ponsonby and Sarah Thomson
 for dicussions </p>
-<p>Coding inspiration, tips and let's be honest slabs of code taken from 
+<p class="nospace">Coding inspiration and tips taken from 
   <ul>
   <li>https://blog.djnavarro.net/posts/2023-04-09_webr/</li>
   <li>https://rud.is/webr-d3-demo/</li>
