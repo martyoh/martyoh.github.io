@@ -201,7 +201,9 @@ print(str(estimates))
     # geom_point() +
     # geom_abline(slope=1, intercept=0, colour="#FF000080", linewidth=4) ->
     # linear_estimates_coef
-  plot(estimate_Adjusted_C ~ estimate_Naive, data=estimates_to_plot)
+  plot(estimate_Adjusted_C ~ estimate_Naive, data=estimates_to_plot,
+       xlab="Estimate (no adjustment)",
+       ylab="Estimate (adjusting for covariate)")
   abline(0, 1, col="#FF000080", lwd=4)
   
   # linear_estimates_coef
@@ -211,7 +213,9 @@ print(str(estimates))
     # geom_abline(slope=1, intercept=0, colour="#FF000080", linewidth=4) ->
     # linear_estimates_se
 
-  plot(std.error_Adjusted_C ~ std.error_Naive, estimates_to_plot)
+  plot(std.error_Adjusted_C ~ std.error_Naive, estimates_to_plot,
+       xlab="Standard error (no adjustment)",
+       ylab="Standard error (adjusting for covariate)")
   abline(0, 1, col="#FF000080", lwd=4)
 
   # linear_estimates_se
