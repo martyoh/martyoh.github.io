@@ -14,8 +14,10 @@ li {
 </style>
 </head>
 <body>
-<p class="nospace"><div id="loading">Please wait, webR is loading...</div></p>
+//<p class="nospace"><div id="loading">Please wait, webR is loading...</div></p>
 <div id="main">
+
+<img src="image.png" alt="Directed acyclic graph showing E to D and C to D">
 
 <input type="text" id="my_seed" value="NULL">
 
@@ -130,7 +132,7 @@ for dicussions </p>
   (async () => {
     // Remove the loading message once webR is ready
     await webR.init();
-    loading.remove();
+    //loading.remove();
     button.removeAttribute('disabled');
     let sim_regr = await fetch('sim_regr.R');
     await webR.evalR(await sim_regr.text());
