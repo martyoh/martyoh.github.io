@@ -1,1 +1,166 @@
-<h1>Coming soon</h1>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Simulate unnecessary adjustments</title>
+<style>
+li {
+  font-family:sans-serif;
+}
+.nospace {
+  margin-bottom: 2px;
+  font-family: sans-serif;
+}
+</style>
+</head>
+<body>
+<div id="main">
+
+<img src="image.png" alt="Directed acyclic graph showing E to D and C to D" width="300" height="300">
+
+<p class="nospace">Model for generating the data<br>
+
+<input type="radio" id="linear_g" name="generating_model" value="linear" checked="checked">
+<label for="linear_g">Linear</label><br>
+<input type="radio" id="odds_g" name="generating_model" value="odds">
+<label for="odds_g">Odds</label><br>
+<input type="radio" id="risk_g" name="generating_model" value="risk">
+<label for="risk_g">Risk</label><br><br>
+</p>
+
+<p class="nospace">Model for analyzing the data<br>
+
+<input type="radio" id="linear_r" name="regression_model" value="linear" checked="checked">
+<label for="linear_r">Linear</label><br>
+<input type="radio" id="odds_r" name="regression_model" value="odds">
+<label for="odds_r">Odds</label><br>
+<input type="radio" id="risk_r" name="regression_model" value="risk">
+<label for="risk_r">Risk</label><br><br>
+</p>
+
+<p class="nospace">Number of datasets</p>
+
+<input type="text" id="reps" value="100">
+
+<p class="nospace">Size of each dataset</p>
+
+<input type="text" id="N" value="100">
+
+<p class="nospace">Probabililty of exposure</p>
+
+<input type="text" id="p1_E" value="0.5">
+
+<p class="nospace">Probabililty of covariate</p>
+
+<input type="text" id="p1_C" value="0.5">
+
+<p class="nospace">Standard deviations (linear case only)</p>
+<p class="nospace">Exposure
+<input type="text" id="sd_E" value="1.0"> </p>
+<p class="nospace">Covariate
+<input type="text" id="sd_C" value="1.0"></p>
+<p class="nospace">Outcome
+<input type="text" id="sd_D" value="1.0"></p>
+
+<p class="nospace">Effect sizes</p>
+<p class="nospace">Exposure &rarr; Outcome
+<input type="text" id="ror_ED" value="2.0"> </p>
+<p class="nospace">Covariate &rarr; Outcome
+<input type="text" id="ror_CD" value="2.0"></p>
+<p class="nospace">Exposure&ndash;covariate interaction
+<input type="text" id="ror_ECD" value="1.0"></p>
+
+<p class="nospace">Random seed (leave as NULL for clock-based randomization).</p>
+
+<input type="text" id="my_seed" value="NULL">
+
+<p class="nospace">Press "Simulate" (when it is enabled)</p>
+<!-- This button is disabled until WebR is loaded -->
+<button disabled="" id="callr">Simulate</button>
+</div>
+
+<div id="plot-container"></div>
+
+<div id="acknowledgements">
+<p class="nospace">Thanks to Alex Eisner, Anne-Louise Ponsonby and Sarah Thomson
+for discussions </p>
+<p class="nospace">Coding inspiration and tips taken from 
+  <ul>
+  <li>https://blog.djnavarro.net/posts/2023-04-09_webr/</li>
+  <li>https://rud.is/webr-d3-demo/</li>
+  <li>https://webr.r-wasm.org</li>
+  </ul>
+</p>
+</div>
+
+<script type="module">
+
+  import { WebR } from 'https://webr.r-wasm.org/latest/webr.mjs';
+  const webR = new WebR(); 
+  let canvas = null;
+  let loading = document.getElementById('loading');
+  let container = document.getElementById('plot-container');
+  let button = document.getElementById('callr');
+
+  button.onclick = () => {
+    let my_seed = document.getElementById("my_seed").value.trim();
+    let generating_model = document.querySelector('input[name="generating_model"]:checked').value;
+    let regression_model = document.querySelector('input[name="regression_model"]:checked').value;
+    let reps = document.getElementById("reps").value.trim();
+    let N = document.getElementById("N").value.trim();
+    let p1_E = document.getElementById("p1_E").value.trim();
+    let p1_C = document.getElementById("p1_C").value.trim();
+    let sd_E = document.getElementById("sd_E").value.trim();
+    let sd_C = document.getElementById("sd_C").value.trim();
+    let sd_D = document.getElementById("sd_D").value.trim();
+    let ror_ED = document.getElementById("ror_ED").value.trim();
+    let ror_CD = document.getElementById("ror_CD").value.trim();
+    let ror_ECD = document.getElementById("ror_ECD").value.trim();
+    container.replaceChildren();
+    webR.evalRVoid(`
+      webr::canvas()
+      sim_regr(${my_seed}, "${generating_model}", "${regression_model}",
+               ${reps}, ${N}, 
+               ${p1_E}, ${p1_C},
+               ${sd_E}, ${sd_C}, ${sd_D},
+               ${ror_ED}, ${ror_CD}, ${ror_ECD})
+      dev.off()
+    `);
+  }
+
+  (async () => {
+    // Remove the loading message once webR is ready
+    await webR.init();
+    //loading.remove();
+    button.removeAttribute('disabled');
+    let sim_regr = await fetch('sim_regr.R');
+    await webR.evalR(await sim_regr.text());
+
+
+    // Handle webR output messages in an async loop
+    for (;;) {
+      const output = await webR.read();
+      switch (output.type) {
+        case 'canvas':
+          if (output.data.event === 'canvasImage') {
+            // Add plot image data to the current canvas element
+            canvas.getContext('2d').drawImage(output.data.image, 0, 0);
+          } else if (output.data.event === 'canvasNewPage') {
+            // Create a new canvas element
+            canvas = document.createElement('canvas');
+            canvas.setAttribute('width', '1008');
+            canvas.setAttribute('height', '1008');
+            canvas.style.width = "450px";
+            canvas.style.height = "450px";
+            canvas.style.display = "inline-block";
+            container.appendChild(canvas);
+          }
+          break;
+        default:
+          console.log(output);
+      }
+    }
+  })();
+</script>
+</body>
+</html>
