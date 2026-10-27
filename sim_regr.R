@@ -206,7 +206,14 @@ print(str(estimates))
        ylab="Estimate (adjusting for covariate)")
   abline(0, 1, col="#FF000080", lwd=4)
   
-  # linear_estimates_coef
+  if (regression_model %in% c("odds", "risk")) { 
+    print(paste0("Geometric mean unadjusted estimate ", exp(mean(log(estimates_to_plot$estimate_Naive))),
+				 ", geometric mean adjusted estimate ", exp(mean(log(estimates_to_plot$estimate_Adjusted_C)))))
+  } else {
+    print(paste0("Mean unadjusted estimate ", mean(estimates_to_plot$estimate_Naive),
+				 ", mean adjusted estimate ", mean(estimates_to_plot$estimate_Adjusted_C)))
+  }
+# linear_estimates_coef
   
   # ggplot(estimates_to_plot, aes(std.error_Naive, std.error_Adjusted_C)) +
     # geom_point() +
